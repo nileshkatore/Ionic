@@ -1,17 +1,24 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      Contact
+      Help
     </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content>
   <ion-list>
-    <ion-list-header>Follow us on Twitter</ion-list-header>
+    <ion-list-header>Feedback</ion-list-header>
+    <ion-item *ngIf='isOffline' style="background: #707070">
+      <p>You are offline since {{lastConnectivityTime}}</p>
+    </ion-item>
     <ion-item>
-      <ion-icon name="ionic" item-start></ion-icon>
-      @ionicframework
+      <form (submit) = "sendFeedback()">
+        <ion-item>
+          <ion-textarea placeholder="Write to us..."></ion-textarea>
+        </ion-item>
+        <button type="submit" class="btn" ion-button round outline color="primary">Submit</button>
+      </form>
     </ion-item>
   </ion-list>
 </ion-content>

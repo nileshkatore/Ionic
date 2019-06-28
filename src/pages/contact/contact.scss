@@ -1,3 +1,9 @@
 page-contact {
-
+    ion-item{
+        ion-textarea{
+            border: solid 1px #488aff;
+            border-radius: 15px;
+            margin: 5px;
+        }
+    }
 }

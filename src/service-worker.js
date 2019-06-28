@@ -33,3 +33,16 @@ self.toolbox.router.default = self.toolbox.networkFirst;
 self.addEventListener('push', function(event){
   console.log('Got Push notification - ', event);
 })
+
+var sw = self;
+self.addEventListener('sync', function(event){
+  if(event.tag === 'sync-feedback'){
+    console.log("[Service-Worker] : Post - http://localhost:3000/api/feedback");
+    var message = {
+      body : "Your feedback posted successfully to server",
+      icon : "./asset/imgs/logo.png",
+      badge: "./asset/imgs/logo.png"
+    }
+    sw.registration.showNotification("PWA", message);
+  }
+})

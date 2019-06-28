@@ -1,11 +1,17 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      About
+      Camera
     </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-
+  <ion-item>
+    <video #player autoplay></video>
+    <canvas #canvas></canvas>
+  </ion-item>
+  <ion-item>
+    <button #captureBtn ion-button round (click)="captureImage()">Capture</button>
+  </ion-item>
 </ion-content>
