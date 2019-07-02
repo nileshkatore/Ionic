@@ -15,6 +15,7 @@ export class AboutPage {
   CaptureBnt: any;
   nav: any;
   mediaDeviceArray: any;
+  picture:any;
 
   constructor() {
 
@@ -55,10 +56,26 @@ export class AboutPage {
   }
 
   captureImage(){
-    this.canvas.style.dispaly = 'bolck';
+    this.canvas.style.display = 'block';
+    this.player.style.display = 'none';
     let context = this.canvas.getContext('2d');
-    context.drawImage(this.player,0,0,this.player.width, this.player.height);
-    this.player.display = 'none';
+    context.drawImage(this.player, 0, 0,this.player.videoWidth/4, this.player.videoHeight/4);
+    let videoTracks = this.player.srcObject.getVideoTracks();
+    videoTracks.forEach( track => {
+      track.stop();
+    });
+    this.picture = this.dataURItoBlob(this.canvas.toDataURL());
+  }
 
+  dataURItoBlob(dataURI: string){
+    let byteString = atob(dataURI.split(',')[1]);
+    let mimeStirng = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    let ab = new ArrayBuffer(byteString.length);
+    let ia = new Uint8Array(ab);
+    for(var i=0; i < byteString.length; i++){
+      ia[i] = byteString.charCodeAt(i);
+    }
+    let blob = new Blob([ab], {type: mimeStirng});
+    return blob;
   }
 }
