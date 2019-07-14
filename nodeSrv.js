@@ -2,9 +2,9 @@ let express = require('express');
 let webPush = require('web-push');
 
 let app = express();
-
+let port = 8000
 app.listen(8000,function() {
-    console.log('Node server started...');
+    console.log('Node server started started at port ' + port);
 });
 
 let pushSubscription  =  {"endpoint":"https://fcm.googleapis.com/fcm/send/eulkXIDB_iE:APA91bH41QGbIyWSszjmdmRfgXMAPUbVA8tILEllpUxDBZiUx-w_JcIagiuoOsk3PgFQrDXFcMhLLeXaMC8RjG5kEMpTOUytLiCTl-sLNL7Ecdanr-gU2WVWdqKraP03fEWZpFyWQIpH","expirationTime":null,"keys":{"p256dh":"BP7tVnax0Cqgs2NjQKcmdSKOCvssrTupr2D5LpGTttMN8q6lsDzQODbDkuPZSMi6XLZIZ70O7gaUDIjd4dnOewk","auth":"nzo5j4HaDqF2RWwfkJ6lug"}};
@@ -32,3 +32,16 @@ app.get('/notify/all', function(req, res){
       res.send('Hello World!');
 
 })
+
+app.get('/api/pocs', function(req, res){
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.send(pocs);
+})
+
+var pocs = [
+"kafka-poc-01",
+"pwa-poc-02",
+"kafka-poc-02",
+"flutter_poc_01"
+]

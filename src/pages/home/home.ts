@@ -7,10 +7,37 @@ import { NavController } from 'ionic-angular';
 })
 export class HomePage {
 
+  pocs : any;
+  filteredPocs: any;
+
   constructor(public navCtrl: NavController) {
 
+    let that = this;
+    fetch('http://localhost:8000/api/pocs')
+    .then( res => {
+      return res.json();
+    })
+    .then(jsonRes => {
+      that.pocs = jsonRes;
+      that.filteredPocs = that.pocs;
+    })
   }
 
+  onInput(event){
+    console.log(event);
+    this.filteredPocs = this.filterItem(event.srcElement.value);
+  }
+
+  filterItem(searchTerm){
+    if(searchTerm){
+      return this.pocs.filter( item => {
+        return item.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
+      })
+    }
+    else{
+      return this.pocs;
+    }
+  }
   enablePushNotification(){
     let applicationServerKey = 'BM_mkHE35CTJ3u0wfii0AZOBh1qZH6srq8qe73X3YkphTShGGlT1cPF2kD0G9aTcoW0EaZ5-Y1UH_jNOAj35cy4'
     navigator.serviceWorker.ready
