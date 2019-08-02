@@ -34,14 +34,68 @@ app.get('/notify/all', function(req, res){
 })
 
 app.get('/api/pocs', function(req, res){
-	res.header("Access-Control-Allow-Origin", "*");
-	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-	res.send(pocs);
+  constructResponse(200, pocs, res)
 })
 
-var pocs = [
-"kafka-poc-01",
-"pwa-poc-02",
-"kafka-poc-02",
-"flutter_poc_01"
+app.get('/api/pocs/:pocId', (req, res) => {
+  var poc_id = req.params.pocId;
+  var poc = pocDetalis.find(poc => {
+    return poc.id === poc_id;
+  })
+  constructResponse(200, poc, res)
+})
+
+function constructResponse(status, data, response) {
+  response.header("Access-Control-Allow-Origin", "*");
+  response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  response.status(status).send(data);
+}
+
+var pocs = [ 
+  {
+    id : 'micorservices-poc-01',
+    title : 'Microservces Journey',
+  },
+  {
+    id : 'pwa-poc-01',
+    title : 'PWA Journey',
+  },
+  {
+    id : 'kafka-poc-01',
+    title : 'Kafka Journey',
+  }
+]
+
+var pocDetalis = [ 
+  {
+    id : 'micorservices-poc-01',
+    title : 'Microservces Journey',
+    description : 'microservices desc',
+    clientName : 'ABN AMRO',
+    technologies : [
+      'Docker',
+      'Kubernetes'
+    ]
+  },
+  {
+    id : 'pwa-poc-01',
+    title : 'PWA Journey',
+    description : 'PWA desc',
+    clientName : 'ABN AMRO',
+    technologies : [
+      'Service Worker',
+      'App Menifest',
+      'JS',
+      'HTML 5'
+    ]
+  },
+  {
+    id : 'kafka-poc-01',
+    title : 'Kafka Journey',
+    description : 'kafka desc',
+    clientName : 'ABN AMRO',
+    technologies : [
+      'Kafka',
+    ]
+  }
 ]

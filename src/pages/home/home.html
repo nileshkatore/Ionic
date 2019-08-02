@@ -1,19 +1,23 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="primary">
     <ion-title>Home</ion-title>
+    <ion-buttons end>
+      <button #installBtn ion-button (click) = "installApp()">
+        <ion-icon name="archive" style="zoom:1.7;"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end>
+      <button #notificationBtn ion-button (click) = "enablePushNotification()">
+        <ion-icon name="notifications" style="zoom:1.7;"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <!-- <ion-list>
-      <ion-item *ngFor="let c of pocs">
-        <ion-avatar item-left>
-          <img src="{{c.flag}}">
-        </ion-avatar>
-        <h2>{{c}}</h2>
-        <p>Capital: {{c.capital}}, Region: {{c.region}}</p>
-      </ion-item>
-    </ion-list> -->
+<ion-content>
+  <ion-item *ngIf='isOffline' style="background: #707070">
+    <p style="color: white">You are offline since {{lastConnectivityTime}}</p>
+  </ion-item>
   <ion-searchbar
     [(ngModel)]="myInput"
     [showCancelButton]="shouldShowCancel"
@@ -22,9 +26,32 @@
   </ion-searchbar>
 
     <ion-list>
-      <ion-item *ngFor="let c of filteredPocs">
-         <p>{{c}}</p>
+      <ion-item style="border-bottom: 2px solid #488aff" id="{{poc.id}}" *ngFor="let poc of filteredPocs" (click)="expandPoc($event)">
+         <h2 style="color: #254f94; font-family: Arial, Helvetica, sans-serif; font-size: 14pt; font-weight: bold">{{poc.title}}</h2>
+         <div style="background-color: floralwhite" *ngIf="poc.isExpanded">
+          <ion-card>
+            <ion-header>
+              <ion-card-title><h2 style="color: white; font-family: Arial, Helvetica, sans-serif; font-size: 12pt; font-weight: bold">Client</h2></ion-card-title>
+              <ion-card-content>
+                <ion-item>
+                  <p style="color: #254f94; font-family: Arial, Helvetica, sans-serif; font-size: 12pt;font-weight: bold">{{selectedPoc.clientName}}</p>
+                </ion-item>
+              </ion-card-content>
+            </ion-header>
+          </ion-card>
+          <ion-card>
+              <ion-header>
+                <ion-card-title><h2 style="color: white; font-family: Arial, Helvetica, sans-serif; font-size: 12pt; font-weight: bold">Technologies</h2></ion-card-title>
+                <ion-card-content>
+                  <ion-grid>
+                    <ion-col *ngFor="let technology of selectedPoc.technologies" col-xl-3 col-lg-3 col-md-3 col-sm-3>
+                      <p style="color: #254f94; font-family: Arial, Helvetica, sans-serif;font-size: 12pt; font-weight: bold">{{technology}}</p>
+                    </ion-col>
+                  </ion-grid>
+                </ion-card-content>
+              </ion-header>
+            </ion-card>
+        </div>
       </ion-item>
     </ion-list>
-  <button ion-button (click)="enablePushNotification()">Enable Push Notification</button>
 </ion-content>

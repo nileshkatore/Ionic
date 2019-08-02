@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { TypeCheckCompiler } from '@angular/compiler/src/view_compiler/type_check_compiler';
 
 @Component({
   selector: 'page-home',
@@ -9,24 +10,68 @@ export class HomePage {
 
   pocs : any;
   filteredPocs: any;
+  selectedPoc: any;
+  isOffline: boolean;
+  lastConnectivityDate: string = '';
+  @ViewChild('installBtn', {read: ElementRef}) installBtnEleRef : ElementRef;
+  installBtn: any;
 
   constructor(public navCtrl: NavController) {
-
     let that = this;
+    this.selectedPoc = {description: "dummy"};
     fetch('http://localhost:8000/api/pocs')
     .then( res => {
       return res.json();
     })
     .then(jsonRes => {
       that.pocs = jsonRes;
+
+      that.pocs.forEach(element => {
+          element.isExpanded = false;
+        }
+      )
       that.filteredPocs = that.pocs;
     })
+
+    function handleNetworkChange(event){
+      if(navigator.onLine){
+        that.isOffline = false;
+        that.lastConnectivityDate = '';
+      }
+      else {
+        that.isOffline = true;
+        that.lastConnectivityDate = that.getCurrentDateAndTime();
+      }
+    }
+
+    window.addEventListener("online", handleNetworkChange);
+    window.addEventListener("offline", handleNetworkChange);
+  }
+
+  ionViewWillEnter(){
+    this.installBtn = this.installBtnEleRef.nativeElement as HTMLButtonElement;
+    this.installApp();
+
+    if(navigator.onLine){
+      this.isOffline = false;
+      this.lastConnectivityDate = '';
+    }
+    else {
+      this.isOffline = true;
+      this.lastConnectivityDate = this.getCurrentDateAndTime();
+    }
+  }
+
+  ngAfterViewInit(){
+ 
   }
 
   onInput(event){
     console.log(event);
     this.filteredPocs = this.filterItem(event.srcElement.value);
   }
+
+
 
   filterItem(searchTerm){
     if(searchTerm){
@@ -68,6 +113,61 @@ export class HomePage {
     });
   }
 
+  getCurrentDateAndTime(){
+    return ""
+  }
+
+  installApp(){
+    let that = this;
+    let defferedPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      defferedPrompt = e;
+      this.installBtn.style.display = 'block';
+    })
+
+    this.installBtn.addEventListener('click', (e) => {
+      that.installBtn.style.display = 'none';
+      defferedPrompt.prompt();
+      defferedPrompt.userChoice
+        .then((choiceResult) => {
+          if(choiceResult.outcome === 'accepted'){
+            console.log('User enabled push notifications');
+          } 
+          else {
+            console.log('User dismissed push notifications');
+          }
+          defferedPrompt = null;
+        });
+    });
+  }
+
+  expandPoc(event){
+    let that = this;
+    let poc_id = event.currentTarget.id;
+    this.filteredPocs.forEach((poc, index) => {
+      if(poc.id === poc_id) {
+        if(poc.isExpanded){
+          poc.isExpanded = false;
+        }
+        else {
+          poc.isExpanded = true;
+          fetch('http://localhost:8000/api/pocs/' + poc_id)
+          .then(response => {
+            return response.json()
+          })
+          .then(jsonResonse => {
+            that.selectedPoc = jsonResonse;
+          })
+        }
+      }
+      else {
+        poc.isExpanded = false;
+      }
+      that.filteredPocs[index] = poc;
+    })
+  }
 
 }
 
@@ -85,6 +185,7 @@ function urlBase64ToUint8Array(base64String) {
   }
   return outputArray;
 }
+
 
 
 // {
