@@ -18,40 +18,42 @@
   <ion-item *ngIf='isOffline' style="background: #707070">
     <p style="color: white">You are offline since {{lastConnectivityTime}}</p>
   </ion-item>
-  <ion-searchbar
+  <ion-searchbar style="background-color: #c0d4d4"
     [(ngModel)]="myInput"
     [showCancelButton]="shouldShowCancel"
     (ionInput)="onInput($event)"
     (ionCancel)="onCancel($event)">
   </ion-searchbar>
 
-    <ion-list>
-      <ion-item style="border-bottom: 2px solid #488aff" id="{{poc.id}}" *ngFor="let poc of filteredPocs" (click)="expandPoc($event)">
-         <h2 style="color: #254f94; font-family: Arial, Helvetica, sans-serif; font-size: 14pt; font-weight: bold">{{poc.title}}</h2>
-         <div style="background-color: floralwhite" *ngIf="poc.isExpanded">
-          <ion-card>
-            <ion-header>
-              <ion-card-title><h2 style="color: white; font-family: Arial, Helvetica, sans-serif; font-size: 12pt; font-weight: bold">Client</h2></ion-card-title>
-              <ion-card-content>
-                <ion-item>
-                  <p style="color: #254f94; font-family: Arial, Helvetica, sans-serif; font-size: 12pt;font-weight: bold">{{selectedPoc.clientName}}</p>
-                </ion-item>
-              </ion-card-content>
-            </ion-header>
-          </ion-card>
-          <ion-card>
-              <ion-header>
-                <ion-card-title><h2 style="color: white; font-family: Arial, Helvetica, sans-serif; font-size: 12pt; font-weight: bold">Technologies</h2></ion-card-title>
-                <ion-card-content>
-                  <ion-grid>
-                    <ion-col *ngFor="let technology of selectedPoc.technologies" col-xl-3 col-lg-3 col-md-3 col-sm-3>
-                      <p style="color: #254f94; font-family: Arial, Helvetica, sans-serif;font-size: 12pt; font-weight: bold">{{technology}}</p>
-                    </ion-col>
-                  </ion-grid>
-                </ion-card-content>
-              </ion-header>
-            </ion-card>
-        </div>
-      </ion-item>
-    </ion-list>
+  <ion-list>
+    <ion-item style="border-bottom: 2px solid #488aff" id="{{poc.id}}" *ngFor="let poc of filteredPocs" (click)="expandPoc($event)">
+      <h2 style="color: #254f94; font-family: Arial, Helvetica, sans-serif; font-size: 14pt; font-weight: bold">{{poc.title}}</h2>
+      <div style *ngIf="poc.isExpanded">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title><h2 style="color: white; font-family: Arial, Helvetica, sans-serif; font-size: 12pt; font-weight: bold">Client</h2></ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-item>
+              <p style="color: #254f94; font-family: Arial, Helvetica, sans-serif; font-size: 12pt;font-weight: bold">{{selectedPoc.clientName}}</p>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title><h2 style="color: white; font-family: Arial, Helvetica, sans-serif; font-size: 12pt; font-weight: bold">Technologies</h2></ion-card-title>
+          </ion-card-header> 
+          <ion-card-content>
+            <ion-grid>
+              <ion-row>
+                <ion-col *ngFor="let technology of selectedPoc.technologies" col-xl-3 col-lg-3 col-md-3 col-sm-3>
+                  <p style="color: #254f94; font-family: Arial, Helvetica, sans-serif;font-size: 12pt; font-weight: bold">{{technology}}</p>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </ion-item>
+  </ion-list>
 </ion-content>

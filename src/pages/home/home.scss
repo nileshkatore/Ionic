@@ -1,3 +1,25 @@
 page-home {
+    ion-card {
+        position: relative;
+        text-align: center;
+        border-radius: 20px !important;
+        border: 2px solid #488aff;
+    }
 
+    ion-row {
+        text-align: center;
+    }
+
+    ion-col {
+        text-align: center;
+    }
+
+    ion-card-header {
+        background-color: #488aff;
+        height: 60px;
+    }
+
+    ion-card-content {
+        background-color: white;
+    }
 }

@@ -12,7 +12,7 @@ export class HomePage {
   filteredPocs: any;
   selectedPoc: any;
   isOffline: boolean;
-  lastConnectivityDate: string = '';
+  lastConnectivityTime: string = '';
   @ViewChild('installBtn', {read: ElementRef}) installBtnEleRef : ElementRef;
   installBtn: any;
 
@@ -34,14 +34,7 @@ export class HomePage {
     })
 
     function handleNetworkChange(event){
-      if(navigator.onLine){
-        that.isOffline = false;
-        that.lastConnectivityDate = '';
-      }
-      else {
-        that.isOffline = true;
-        that.lastConnectivityDate = that.getCurrentDateAndTime();
-      }
+      that.setNetworkProperties();
     }
 
     window.addEventListener("online", handleNetworkChange);
@@ -52,26 +45,24 @@ export class HomePage {
     this.installBtn = this.installBtnEleRef.nativeElement as HTMLButtonElement;
     this.installApp();
 
+    this.setNetworkProperties();
+  }
+
+  setNetworkProperties(){
     if(navigator.onLine){
       this.isOffline = false;
-      this.lastConnectivityDate = '';
+      this.lastConnectivityTime = '';
     }
     else {
       this.isOffline = true;
-      this.lastConnectivityDate = this.getCurrentDateAndTime();
+      this.lastConnectivityTime = this.getCurrentDateAndTime();
     }
-  }
-
-  ngAfterViewInit(){
- 
   }
 
   onInput(event){
     console.log(event);
     this.filteredPocs = this.filterItem(event.srcElement.value);
   }
-
-
 
   filterItem(searchTerm){
     if(searchTerm){
@@ -84,6 +75,7 @@ export class HomePage {
     }
   }
   enablePushNotification(){
+    let that = this;
     let applicationServerKey = 'BM_mkHE35CTJ3u0wfii0AZOBh1qZH6srq8qe73X3YkphTShGGlT1cPF2kD0G9aTcoW0EaZ5-Y1UH_jNOAj35cy4'
     navigator.serviceWorker.ready
     .then(function(swReg){
@@ -93,7 +85,7 @@ export class HomePage {
           if(sub === null){
               swReg.pushManager.subscribe({
               userVisibleOnly: true,
-              applicationServerKey: urlBase64ToUint8Array(applicationServerKey)
+              applicationServerKey: that.urlBase64ToUint8Array(applicationServerKey)
             })
             .then(function(subscription){
               console.log('subscription - ', JSON.stringify(subscription) );
@@ -114,7 +106,9 @@ export class HomePage {
   }
 
   getCurrentDateAndTime(){
-    return ""
+    let currentDate = new Date();
+    return currentDate.toDateString() + " " + currentDate.getHours() + ":" 
+    + currentDate.getMinutes() + ":" + currentDate.getSeconds();
   }
 
   installApp(){
@@ -155,9 +149,10 @@ export class HomePage {
           poc.isExpanded = true;
           fetch('http://localhost:8000/api/pocs/' + poc_id)
           .then(response => {
-            return response.json()
+            return response.json();
           })
           .then(jsonResonse => {
+            console.log("json response " + jsonResonse);
             that.selectedPoc = jsonResonse;
           })
         }
@@ -169,22 +164,22 @@ export class HomePage {
     })
   }
 
-}
-
-function urlBase64ToUint8Array(base64String) {
-  var padding = '='.repeat((4 - base64String.length % 4) % 4);
-  var base64 = (base64String + padding)
-      .replace(/\-/g, '+')
-      .replace(/_/g, '/');
-
-  var rawData = window.atob(base64);
-  var outputArray = new Uint8Array(rawData.length);
-
-  for (var i = 0; i < rawData.length; ++i) {
-      outputArray[i] = rawData.charCodeAt(i);
+  urlBase64ToUint8Array(base64String) {
+    var padding = '='.repeat((4 - base64String.length % 4) % 4);
+    var base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+  
+    var rawData = window.atob(base64);
+    var outputArray = new Uint8Array(rawData.length);
+  
+    for (var i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
   }
-  return outputArray;
 }
+
 
 
 
